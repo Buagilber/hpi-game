@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Таємниця кондитерської</title>
+  <meta name="description" content="Дитяча рольова гра з ШІ-Ведучим для помічника ведучого (18+)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A5%90%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <main class="stage">
+      <section class="scene" aria-label="Сцена">
+        <img class="scene__image" id="scene-image" alt="">
+        <div class="scene__hud">
+          <div class="stars" id="stars" aria-label="Зірки команди"></div>
+          <div class="shield" id="shield" aria-label="Щит ворога" hidden></div>
+        </div>
+        <div class="scene__sparkles" id="sparkles" hidden></div>
+        <img class="scene__card" id="scene-card" alt="" hidden>
+        <div class="scene__roll" id="roll-result" hidden></div>
+      </section>
+
+      <aside class="log" aria-label="Журнал етапів">
+        <header class="log__head">
+          <button class="icon-btn" id="log-prev" aria-label="Попередній етап">▲</button>
+          <span class="log__counter" id="log-counter"></span>
+          <button class="icon-btn" id="log-next" aria-label="Наступний етап">▼</button>
+        </header>
+        <div class="log__body" id="log-body"></div>
+        <button class="btn log__latest" id="log-latest" hidden>До поточного етапу ⤓</button>
+        <div class="log__status" id="status" hidden></div>
+      </aside>
+    </main>
+
+    <footer class="controls">
+      <div class="side">
+        <button class="icon-btn icon-btn--big" id="menu" aria-label="Меню">☰</button>
+        <button class="inventory" id="inventory" aria-label="Інвентар"></button>
+      </div>
+
+      <div class="heroes" id="heroes" role="radiogroup" aria-label="Від чийого імені відповідь"></div>
+
+      <form class="composer" id="composer">
+        <button type="button" class="btn btn--roll" id="roll" hidden></button>
+        <textarea id="input" rows="2" placeholder="Що роблять герої?"></textarea>
+        <button type="button" class="icon-btn icon-btn--big" id="mic" aria-label="Надиктувати">🎤</button>
+        <button type="submit" class="icon-btn icon-btn--big icon-btn--primary" id="send" aria-label="Надіслати">➤</button>
+      </form>
+    </footer>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
