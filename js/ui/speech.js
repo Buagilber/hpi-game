@@ -4,6 +4,10 @@
 const synth = window.speechSynthesis;
 let voice = null;
 let enabled = true;
+let speakingKey = null;          // який текст зараз читається (номер етапу) — для іконки кнопки 🔊/🔇
+let listeners = [];
+let run = 0;                     // номер поточного читання: події від скасованого читання не чіпають іконку
+const notify = () => listeners.forEach((fn) => fn(speakingKey));
 
 function pickVoice() {
   const voices = synth?.getVoices() ?? [];
@@ -20,22 +24,33 @@ export const speech = {
   get enabled() { return enabled; },
   set enabled(v) { enabled = v; if (!v) this.stop(); },
 
-  stop() { synth?.cancel(); },
+  get speakingKey() { return speakingKey; },
+  onChange(fn) { listeners.push(fn); },
+
+  stop() {
+    run += 1;
+    synth?.cancel();
+    if (speakingKey !== null) { speakingKey = null; notify(); }
+  },
 
   // fragments: [{ voice, text }] — читаємо по реченнях: довгі фрази в деяких браузерах обриваються.
-  speak(fragments, { force = false } = {}) {
+  speak(fragments, { force = false, key = null } = {}) {
     if (!synth || (!enabled && !force)) return;
     synth.cancel();
     const sentences = fragments
       .flatMap((f) => f.text.match(/[^.!?…]+[.!?…]*["»]?\s*/g) ?? [f.text])
       .map((s) => s.trim())
       .filter(Boolean);
-    for (const s of sentences) {
+    const myRun = ++run;
+    speakingKey = key;
+    notify();
+    sentences.forEach((s, i) => {
       const u = new SpeechSynthesisUtterance(s);
       u.lang = "uk-UA";
       if (voice) u.voice = voice;
       u.rate = 0.95;
+      if (i === sentences.length - 1) u.onend = () => { if (run === myRun) { speakingKey = null; notify(); } };
       synth.speak(u);
-    }
+    });
   },
 };

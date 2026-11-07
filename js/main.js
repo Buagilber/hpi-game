@@ -42,6 +42,7 @@ function draw() {
   renderScene(currentImage());
   renderHud({ stars: s.stars, starsMax: content.manifest.rules.stars_max, shield: s.boss_phase && s.boss_phase !== "done" ? s.shield : null, shieldMax: content.manifest.rules.shield });
   renderLog(cast, game.stages, view);
+  updateReplayButton();
   $("log-latest").hidden = view >= game.stages.length - 1;
   renderHeroes(cast, { active, awaited: aw.type === "answer" ? aw.hero : null, participants: s.participants }, (hero) => { active = hero; draw(); });
   renderInventory(s.inventory);
@@ -52,6 +53,16 @@ function draw() {
   $("send").disabled = busy || game.finished;
   $("pass").disabled = busy || game.finished;
   $("input").disabled = busy || game.finished;
+}
+
+// Іконка кнопки читання на видимому етапі: 🔊 — зараз читається (натиснути — зупинити), 🔇 — тиша (натиснути — читати спочатку).
+function updateReplayButton() {
+  const btn = document.querySelector("[data-replay]");
+  if (!btn) return;
+  const on = speech.speakingKey === view;
+  btn.textContent = on ? "🔊" : "🔇";
+  btn.classList.toggle("is-speaking", on);
+  btn.setAttribute("aria-label", on ? "Зупинити читання" : "Прочитати ще раз");
 }
 
 function afterStage(stage) {
@@ -75,7 +86,7 @@ async function run(action) {
     const stage = await action();
     if (stage.rolls.length) markRollResult(stage.rolls[0].success);
     afterStage(stage);
-    speech.speak(stage.narration);
+    speech.speak(stage.narration, { key: game.stages.length - 1 });
     setStatus("");
   } catch (e) {
     console.error(e);
@@ -191,10 +202,15 @@ async function main() {
   $("roll").addEventListener("click", roll);
   $("inventory").addEventListener("click", () => openInventory(content.manifest, game.state));
   $("log-body").addEventListener("click", (e) => {
-    if (e.target.closest("[data-replay]")) speech.speak(game.stages[view].narration, { force: true });
+    // 🔊 / 🔇 (Z-14): якщо цей етап зараз читається — зупинити, інакше прочитати спочатку.
+    if (e.target.closest("[data-replay]")) {
+      if (speech.speakingKey === view) speech.stop();
+      else speech.speak(game.stages[view].narration, { force: true, key: view });
+    }
   });
   $("log-latest").addEventListener("click", () => { view = game.stages.length - 1; draw(); });
   speech.enabled = store.load("speech", true);
+  speech.onChange(() => updateReplayButton());
   soundSettings.enabled = store.load("sounds", true);
   createRecorder({
     button: $("mic"),

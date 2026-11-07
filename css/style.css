@@ -237,6 +237,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .gm p:last-of-type { margin-bottom: 0; }
 .gm__speaker { color: var(--gold); font-weight: 800; }
 .gm__replay { position: absolute; top: 6px; right: 6px; }
+.gm__replay.is-speaking { border-color: var(--gold); animation: pulse 1.2s ease-in-out infinite; }
 
 /* ---------- низ: керування ---------- */
 .controls {
