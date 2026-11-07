@@ -54,6 +54,8 @@ export function buildSchema(manifest, block) {
   return {
     type: O,
     properties: {
+      // Z-22: consult — гравці уточнюють, план ще не ухвалено (без змін стану, сцени й кидка); act — дія чи рішення.
+      mode: { type: S, enum: ["consult", "act"] },
       scene: { type: S, enum: rb },
       participants: { type: A, items: { type: S, enum: heroes } },
       narration: { type: A, items: { type: O, properties: { voice: { type: S, enum: Object.keys(manifest.voices) }, text: { type: S } }, required: ["voice", "text"] } },
@@ -92,6 +94,6 @@ export function buildSchema(manifest, block) {
       call_to_action: { type: O, properties: { hero: { type: S, enum: [...heroes, "both", "any"] }, text: { type: S } }, required: ["hero", "text"] },
       gm_note: { type: S },
     },
-    required: ["scene", "participants", "narration", "call_to_action", "show", "state_changes", "await", "gm_note"],
+    required: ["mode", "scene", "participants", "narration", "call_to_action", "show", "state_changes", "await", "gm_note"],
   };
 }

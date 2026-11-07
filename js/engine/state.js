@@ -106,7 +106,7 @@ function stageSuccesses(manifest, ctx, cond) {
 // Повертає { violations, drop } без зміни стану. drop — що застосунок не прийме, якщо Ведучий не виправиться.
 export function checkResponse(manifest, state, resp, ctx) {
   const v = [];
-  const drop = { items: new Set(), prepared: new Set(), remove: new Set(), supers: new Set(), close: false, scene: false };
+  const drop = { items: new Set(), prepared: new Set(), remove: new Set(), supers: new Set(), close: false, scene: false, consult: false, roll: false };
   const ch = resp.state_changes ?? {};
   const blocks = manifest.blocks;
   const before = ctx.blockBefore;
@@ -120,6 +120,30 @@ export function checkResponse(manifest, state, resp, ctx) {
   }
   const rolledSuccess = ctx.rolls.some((r) => r.success);
 
+  // Z-22: режим уточнення не рухає сюжет.
+  if (resp.mode === "consult") {
+    const changed = ["items_add", "items_remove", "super_used", "prepared_add"].some((k) => ch[k]?.length) || ch.stars_delta || ch.shield_delta || (ch.boss_phase && ch.boss_phase !== state.boss_phase);
+    if (changed || resp.scene !== before || resp.await?.type === "roll") {
+      v.push("mode=consult (гравці лише уточнюють): не змінюй стан і сцену й не проси кидок — відповідай на питання з «Деталей сцени» і спитай, що вони вирішують; якщо гравці вже ухвалили рішення — став mode=act");
+      drop.consult = true; drop.scene = true;
+    }
+  }
+  // Z-24: після провалу той самий герой не кидає одразу знову — спершу нова ситуація і вибір гравців.
+  const aw = resp.await;
+  if (aw?.type === "roll" && ctx.rolls.some((r) => !r.success && r.hero === aw.hero)) {
+    v.push(`${aw.hero === "both" ? "герої щойно провалили спільний кидок" : `${heroName(manifest, aw.hero)} щойно провалив(-ла) кидок`} — не проси кидок знову: опиши нову ситуацію після провалу і спитай, що вони робитимуть (інший герой може діяти з кидком)`);
+    drop.roll = true;
+  }
+  // Z-33: до кидка — лише спроба, без слів успіху (результат ще невідомий).
+  if (aw?.type === "roll") {
+    const pre = [...(resp.narration ?? []).filter((f) => f.voice === "narrator").map((f) => f.text), resp.call_to_action?.text ?? ""].join(" ");
+    const hit = pre.match(/(?<![\p{L}])(вправн|спритн|влучн|успішн|блискуч)\p{L}*/iu);
+    if (hit) v.push(`до кидка результат ще невідомий — прибери «${hit[0].trim()}»: опиши спробу і напругу, а що вийшло — після кидка`);
+  }
+  // ⭐ після цього етапу (для Підкріплення «коли скрутно», Z-28).
+  const inBossNow = blocks[before]?.boss || blocks[resp.scene]?.boss;
+  const starsAfter = Math.max(0, state.stars + (inBossNow ? Math.max(-1, Math.min(0, ch.stars_delta ?? 0)) : 0));
+
   // Предмети, що знімаються, мають бути в інвентарі.
   for (const it of ch.items_remove ?? []) if (!state.inventory.includes(it)) { v.push(`предмета «${manifest.items[it]?.name ?? it}» немає в інвентарі`); drop.remove.add(it); }
 
@@ -131,6 +155,7 @@ export function checkResponse(manifest, state, resp, ctx) {
     if (r.unless_has && invAfter.includes(r.unless_has)) return `«${manifest.items[r.item]?.name ?? r.prepared}» — не та нагорода: «${manifest.items[r.unless_has].name}» вже є`;
     if (r.requires && !invAfter.includes(r.requires)) return `«${manifest.items[r.item]?.name}» видається лише якщо є «${manifest.items[r.requires].name}», а її немає`;
     if (r.when === "roll" && !rolledSuccess && !validSupers.length) return `«${manifest.items[r.item]?.name ?? r.prepared}» — лише після успішного кидка чи суперздібності; спершу попроси кидок`;
+    if (r.when === "low_stars" && starsAfter > (r.max_stars ?? 1)) return `«${manifest.items[r.item]?.name}» — Софі кидає лише тоді, коли в команди лишилась ${r.max_stars ?? 1} ⭐ (зараз ${starsAfter})`;
     if (r.when === "fallback" && memoryCount(manifest, invAfter) >= (r.min_memories_below ?? 2)) return `«${manifest.items[r.item]?.name}» — лише якщо Спогадів менше ${r.min_memories_below}`;
     return null;
   };
@@ -192,7 +217,7 @@ export function applyResponse(manifest, state, resp, ctx, drop = null) {
   drop ??= checkResponse(manifest, state, resp, ctx).drop;
   const issues = [];
   const fx = [];
-  const ch = resp.state_changes ?? {};
+  const ch = drop.consult ? {} : resp.state_changes ?? {};
   const blocks = manifest.blocks;
   const before = ctx.blockBefore;
   const inBoss = blocks[before]?.boss || blocks[resp.scene]?.boss;

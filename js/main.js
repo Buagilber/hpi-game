@@ -1,19 +1,19 @@
 // Точка входу: вхід з ключем і дисклеймер (E2), сесія гри з Ведучим (E3).
-import { castFromManifest, renderDrafts, renderScene, renderCards, renderEnemy, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js?v=20261107-2210";
-import { askForKey, showDisclaimer, openMenu, askConfirm, DISCLAIMER_VERSION } from "./ui/modals.js?v=20261107-2210";
-import { loadAdventure, loadSkill } from "./engine/content.js?v=20261107-2210";
-import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js?v=20261107-2210";
-import { rollDie } from "./engine/dice.js?v=20261107-2210";
-import { askRoll, showRollInScene, markRollResult, hideRollInScene, showCritical } from "./ui/dice.js?v=20261107-2210";
-import { showFinale } from "./ui/finale.js?v=20261107-2210";
-import { Game } from "./engine/game.js?v=20261107-2210";
-import * as store from "./engine/storage.js?v=20261107-2210";
-import { speech } from "./ui/speech.js?v=20261107-2210";
-import { soundSettings } from "./ui/sound.js?v=20261107-2210";
-import { createRecorder } from "./ui/voice.js?v=20261107-2210";
-import { openInventory } from "./ui/inventory.js?v=20261107-2210";
-import { askResume, openArchive } from "./ui/archive.js?v=20261107-2210";
-import * as archive from "./engine/archive.js?v=20261107-2210";
+import { castFromManifest, renderDrafts, renderScene, renderCards, renderEnemy, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js?v=20261107-2223";
+import { askForKey, showDisclaimer, openMenu, askConfirm, DISCLAIMER_VERSION } from "./ui/modals.js?v=20261107-2223";
+import { loadAdventure, loadSkill } from "./engine/content.js?v=20261107-2223";
+import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js?v=20261107-2223";
+import { rollDie } from "./engine/dice.js?v=20261107-2223";
+import { askRoll, showRollInScene, markRollResult, hideRollInScene, showCritical } from "./ui/dice.js?v=20261107-2223";
+import { showFinale } from "./ui/finale.js?v=20261107-2223";
+import { Game } from "./engine/game.js?v=20261107-2223";
+import * as store from "./engine/storage.js?v=20261107-2223";
+import { speech } from "./ui/speech.js?v=20261107-2223";
+import { soundSettings } from "./ui/sound.js?v=20261107-2223";
+import { createRecorder } from "./ui/voice.js?v=20261107-2223";
+import { openInventory } from "./ui/inventory.js?v=20261107-2223";
+import { askResume, openArchive } from "./ui/archive.js?v=20261107-2223";
+import * as archive from "./engine/archive.js?v=20261107-2223";
 
 const ADVENTURE = "content/adventures/adventure_1_v4";
 const SKILL = "content/skill/gamemaster.md";

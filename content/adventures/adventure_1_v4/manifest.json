@@ -1,702 +1,726 @@
 {
-  "adventure": "adventure_1_v4",
-  "title": "Таємниця кондитерської",
-  "version": "4.1",
-  "rules": {
-    "die": 6,
-    "target": 4,
-    "stars_start": 3,
-    "stars_max": 3,
-    "shield": 3,
-    "bonus_cap": 2,
-    "bonus_cap_full_plan": 3,
-    "friendly_shoulder": 1,
-    "idea": 1,
-    "spark": 1,
-    "spark_on_joint_roll": true,
-    "prepared_in_defense": false,
-    "superpower_uses_per_game": 1,
-    "superpower_roll": false,
-    "max_star_loss_per_round": 1,
-    "joint_success_counts": 2,
-    "phase_timeout_stages": 5
-  },
-  "hub": {
-    "block": "S5",
-    "rooms": [
-      "S5а",
-      "S5б",
-      "S5в"
-    ],
-    "required": 2,
-    "exit": "S6",
-    "shortcut_after_turns": 14
-  },
-  "reward_rules": "when: choice — за рішенням гравців, без кидка; roll — лише у відповідь на успішний кидок із тегом блоку або коли цей етап використано суперздібність; has — без кидка, якщо є предмет requires; auto — видається в сцені завжди; fallback — якщо Спогадів менше min_memories_below. unless_has / requires — додаткові умови.",
-  "heroes": {
-    "LB": {
-      "name": "Леді Баг",
-      "base": "Йо-йо",
-      "super": "Супершанс",
-      "super_fx": "LB-FX-02",
-      "cards": [
-        "LB-CH-01a",
-        "LB-CH-01b",
-        "LB-CH-01c"
-      ]
-    },
-    "CK": {
-      "name": "Супер-Кіт",
-      "base": "Посох",
-      "super": "Котаклізм",
-      "super_fx": "LB-FX-01",
-      "cards": [
-        "LB-CH-02a",
-        "LB-CH-02b",
-        "LB-CH-02c"
-      ]
-    }
-  },
-  "voices": {
-    "narrator": "Ведучий",
-    "NP-01": "Пан П'єр",
-    "EN-01": "Крокант-Мен",
-    "NP-02": "Софі",
-    "NP-03": "Мурка"
-  },
-  "vocabulary": [
-    "міледі",
-    "Котик",
-    "Акума",
-    "акуматизація",
-    "метелик",
-    "брошка",
-    "багет",
-    "сухарі",
-    "груша",
-    "полуниця",
-    "пожежна драбина",
-    "комора",
-    "горище",
-    "кухня",
-    "піч",
-    "Дружнє плече",
-    "Іскра",
-    "Несподіванка"
+ "adventure": "adventure_1_v4",
+ "title": "Таємниця кондитерської",
+ "version": "4.1",
+ "rules": {
+  "die": 6,
+  "target": 4,
+  "stars_start": 3,
+  "stars_max": 3,
+  "shield": 3,
+  "bonus_cap": 2,
+  "bonus_cap_full_plan": 3,
+  "friendly_shoulder": 1,
+  "idea": 1,
+  "spark": 1,
+  "spark_on_joint_roll": true,
+  "prepared_in_defense": false,
+  "superpower_uses_per_game": 1,
+  "superpower_roll": false,
+  "max_star_loss_per_round": 1,
+  "joint_success_counts": 2,
+  "phase_timeout_stages": 5
+ },
+ "hub": {
+  "block": "S5",
+  "rooms": [
+   "S5а",
+   "S5б",
+   "S5в"
   ],
-  "start_state": {
-    "block": "S0",
-    "participants": [
-      "LB",
-      "CK"
-    ],
-    "stars": 3,
-    "shield": 3,
-    "boss_phase": null,
-    "inventory": [],
-    "super_used": [],
-    "prepared": [],
-    "spark_pending": false
+  "required": 2,
+  "exit": "S6",
+  "shortcut_after_turns": 14
+ },
+ "reward_rules": "when: choice — за рішенням гравців, без кидка; roll — лише у відповідь на успішний кидок із тегом блоку або коли цей етап використано суперздібність; has — без кидка, якщо є предмет requires; auto — видається в сцені завжди; fallback — якщо Спогадів менше min_memories_below. unless_has / requires — додаткові умови. low_stars — Підкріплення «коли скрутно»: лише в бою, коли після цього етапу в команди лишилось не більше max_stars ⭐.",
+ "heroes": {
+  "LB": {
+   "name": "Леді Баг",
+   "base": "Йо-йо",
+   "super": "Супершанс",
+   "super_fx": "LB-FX-02",
+   "cards": [
+    "LB-CH-01a",
+    "LB-CH-01b",
+    "LB-CH-01c"
+   ]
   },
-  "items": {
-    "IT-02": {
-      "name": "Малюнок Софі",
-      "memory": true
-    },
-    "IT-03": {
-      "name": "Книга рецептів",
-      "memory": true
-    },
-    "IT-04": {
-      "name": "Теплий круасан",
-      "memory": true
-    },
-    "IT-05": {
-      "name": "Світлина П'єра з дітьми",
-      "memory": true
-    },
-    "IT-06": {
-      "name": "Мішок борошна"
-    },
-    "IT-07": {
-      "name": "Полуничний кошик",
-      "reinforcement": "ягоди"
-    },
-    "IT-08": {
-      "name": "Миска какао",
-      "reinforcement": true
-    },
-    "IT-09": {
-      "name": "Термос какао від Софі",
-      "reinforcement": true
-    }
-  },
-  "bonuses": [
-    {
-      "id": "quiet_entry",
-      "name": "Тихий вхід",
-      "value": 1,
-      "kind": "action",
-      "tags_all": [
-        "S4"
-      ],
-      "uses": 1,
-      "expires_on_leave": "S4"
-    },
-    {
-      "id": "surprise",
-      "name": "Несподіванка",
-      "value": 1,
-      "kind": "action",
-      "tags_all": [
-        "F1"
-      ],
-      "uses": 1,
-      "expires_on_phase_end": "F1",
-      "exclusive_group": "F1_prep"
-    },
-    {
-      "id": "flour_sack",
-      "name": "Мішок борошна",
-      "value": 1,
-      "kind": "action",
-      "tags_all": [
-        "F1",
-        "armor"
-      ],
-      "requires_item": "IT-06",
-      "uses": 1,
-      "expires_on_phase_end": "F1",
-      "exclusive_group": "F1_prep"
-    },
-    {
-      "id": "f2_item",
-      "name": "Предмет до ситуації",
-      "value": 1,
-      "kind": "action",
-      "tags_any": [
-        "item:IT-04",
-        "item:IT-07",
-        "item:IT-08"
-      ],
-      "tags_all": [
-        "F2"
-      ],
-      "uses": null
-    },
-    {
-      "id": "three_memories",
-      "name": "Три Спогади",
-      "value": 1,
-      "kind": "action",
-      "tags_all": [
-        "F3",
-        "brooch"
-      ],
-      "requires_memories": 3,
-      "uses": null
-    }
-  ],
-  "bonus_notes": "exclusive_group: на один кидок застосовується лише одна заготовка групи; інша чекає. Дружнє плече — коли hero = both. Іскра — spark_pending, згорає на найближчому кидку будь-якого героя, зокрема захисному. idea — прапорець від Ведучого.",
-  "client_images": {
-    "hero_cards": [
-      "LB-CH-01a",
-      "LB-CH-01b",
-      "LB-CH-01c",
-      "LB-CH-02a",
-      "LB-CH-02b",
-      "LB-CH-02c"
-    ],
-    "superpower_fx": [
-      "LB-FX-01",
-      "LB-FX-02"
-    ],
-    "joint_roll_fx": [
-      "LB-FX-03"
-    ],
-    "critical_success": [
-      "LB-WIN-a",
-      "LB-WIN-b",
-      "LB-WIN-c"
-    ],
-    "critical_success_joint": [
-      "LB-WIN-TEAM-a",
-      "LB-WIN-TEAM-b"
-    ],
-    "critical_fail": {
-      "LB": [
-        "LB-FAIL-a",
-        "LB-FAIL-b",
-        "LB-FAIL-c"
-      ],
-      "CK": [
-        "LB-FAIL-d",
-        "LB-FAIL-e",
-        "LB-FAIL-f"
-      ]
-    },
-    "critical_fail_joint": [
-      "LB-FAIL-TEAM-a",
-      "LB-FAIL-TEAM-b"
-    ],
-    "placeholders": {
-      "16:9": "LB-PH-a",
-      "1:1": "LB-PH-b"
-    },
-    "gate": "LB-UI-01",
-    "finale_bg": [
-      "LB-END-a",
-      "BG-12"
-    ]
-  },
-  "context": {
-    "always": [
-      "00_map.md"
-    ],
-    "boss": [
-      "boss_common.md"
-    ],
-    "boss_from": "S6",
-    "inserts": "inserts.md"
-  },
-  "blocks": {
-    "S0": {
-      "file": "S0.md",
-      "milestone": true,
-      "critical": false,
-      "images": [
-        "BG-01",
-        "NP-01",
-        "IT-04"
-      ],
-      "items": [
-        "IT-04"
-      ],
-      "exits": [
-        "S1"
-      ],
-      "rewards": [
-        {
-          "item": "IT-04",
-          "when": "choice"
-        }
-      ]
-    },
-    "S1": {
-      "file": "S1.md",
-      "milestone": true,
-      "critical": false,
-      "images": [
-        "BG-02",
-        "NP-02",
-        "IT-02"
-      ],
-      "items": [
-        "IT-02"
-      ],
-      "exits": [
-        "S2"
-      ],
-      "rewards": [
-        {
-          "item": "IT-02",
-          "when": "choice"
-        }
-      ]
-    },
-    "S2": {
-      "file": "S2.md",
-      "milestone": true,
-      "critical": false,
-      "images": [
-        "BG-03",
-        "EN-01"
-      ],
-      "items": [],
-      "exits": [
-        "S3А",
-        "S3Б"
-      ]
-    },
-    "S3А": {
-      "file": "S3A.md",
-      "milestone": false,
-      "critical": false,
-      "images": [
-        "BG-04",
-        "IT-07"
-      ],
-      "items": [
-        "IT-07"
-      ],
-      "prepared": [
-        "quiet_entry"
-      ],
-      "exits": [
-        "S4",
-        "S3Б"
-      ],
-      "rewards": [
-        {
-          "item": "IT-07",
-          "when": "roll"
-        },
-        {
-          "prepared": "quiet_entry",
-          "when": "roll"
-        }
-      ]
-    },
-    "S3Б": {
-      "file": "S3B.md",
-      "milestone": false,
-      "critical": false,
-      "images": [
-        "BG-05",
-        "IT-03"
-      ],
-      "items": [
-        "IT-03"
-      ],
-      "exits": [
-        "S4",
-        "S3А"
-      ],
-      "rewards": [
-        {
-          "item": "IT-03",
-          "when": "roll"
-        }
-      ]
-    },
-    "S4": {
-      "file": "S4.md",
-      "milestone": true,
-      "critical": false,
-      "images": [
-        "BG-06"
-      ],
-      "items": [],
-      "prepared": [
-        "surprise"
-      ],
-      "exits": [
-        "S5"
-      ],
-      "rewards": [
-        {
-          "prepared": "surprise",
-          "when": "roll"
-        }
-      ]
-    },
-    "S5": {
-      "file": "S5.md",
-      "milestone": true,
-      "critical": false,
-      "images": [
-        "BG-07"
-      ],
-      "items": [],
-      "exits": [
-        "S5а",
-        "S5б",
-        "S5в",
-        "S6"
-      ]
-    },
-    "S5а": {
-      "file": "S5a.md",
-      "milestone": false,
-      "critical": false,
-      "images": [
-        "BG-08",
-        "IT-06"
-      ],
-      "items": [
-        "IT-06"
-      ],
-      "exits": [
-        "S5",
-        "S5б",
-        "S5в",
-        "S6"
-      ],
-      "rewards": [
-        {
-          "item": "IT-06",
-          "when": "roll"
-        }
-      ]
-    },
-    "S5б": {
-      "file": "S5b.md",
-      "milestone": false,
-      "critical": false,
-      "images": [
-        "BG-09",
-        "IT-04",
-        "IT-08"
-      ],
-      "items": [
-        "IT-04",
-        "IT-08"
-      ],
-      "exits": [
-        "S5",
-        "S5а",
-        "S5в",
-        "S6"
-      ],
-      "rewards": [
-        {
-          "item": "IT-04",
-          "when": "roll",
-          "unless_has": "IT-04"
-        },
-        {
-          "item": "IT-08",
-          "when": "roll",
-          "requires": "IT-04"
-        }
-      ]
-    },
-    "S5в": {
-      "file": "S5v.md",
-      "milestone": false,
-      "critical": false,
-      "images": [
-        "BG-10",
-        "IT-03",
-        "IT-05"
-      ],
-      "items": [
-        "IT-03",
-        "IT-05"
-      ],
-      "exits": [
-        "S5",
-        "S5а",
-        "S5б",
-        "S6"
-      ],
-      "rewards": [
-        {
-          "item": "IT-03",
-          "when": "roll",
-          "unless_has": "IT-03"
-        },
-        {
-          "item": "IT-05",
-          "when": "has",
-          "requires": "IT-03"
-        }
-      ]
-    },
-    "S6": {
-      "file": "S6.md",
-      "milestone": true,
-      "critical": false,
-      "images": [
-        "BG-11",
-        "EN-01",
-        "NP-02",
-        "IT-09",
-        "IT-02",
-        "IT-05"
-      ],
-      "items": [
-        "IT-09",
-        "IT-02",
-        "IT-05"
-      ],
-      "exits": [
-        "F1"
-      ],
-      "rewards": [
-        {
-          "item": "IT-09",
-          "when": "auto"
-        },
-        {
-          "item": "IT-02",
-          "when": "auto",
-          "unless_has": "IT-02"
-        },
-        {
-          "item": "IT-05",
-          "when": "fallback",
-          "min_memories_below": 2
-        }
-      ]
-    },
-    "F1": {
-      "file": "F1.md",
-      "milestone": true,
-      "critical": true,
-      "boss": true,
-      "images": [
-        "BG-11",
-        "EN-01",
-        "EV-01",
-        "EV-06",
-        "EV-02",
-        "IT-06",
-        "IT-07",
-        "IT-08",
-        "IT-09",
-        "NP-02"
-      ],
-      "items": [],
-      "exits": [
-        "F2"
-      ],
-      "close": [
-        {
-          "super": "CK"
-        },
-        {
-          "successes": 2,
-          "tags": [
-            "F1",
-            "armor"
-          ]
-        }
-      ]
-    },
-    "F2": {
-      "file": "F2.md",
-      "milestone": true,
-      "critical": true,
-      "boss": true,
-      "images": [
-        "BG-11",
-        "EN-01",
-        "EV-07",
-        "EV-02",
-        "IT-04",
-        "IT-07",
-        "IT-08",
-        "IT-09",
-        "NP-02"
-      ],
-      "items": [],
-      "exits": [
-        "F3"
-      ],
-      "close": [
-        {
-          "super": "LB"
-        },
-        {
-          "successes": 1,
-          "tags": [
-            "F2"
-          ],
-          "tags_any": [
-            "item:IT-04",
-            "item:IT-07",
-            "item:IT-08"
-          ]
-        },
-        {
-          "successes": 2,
-          "tags": [
-            "F2",
-            "jam"
-          ]
-        }
-      ]
-    },
-    "F3": {
-      "file": "F3.md",
-      "milestone": true,
-      "critical": true,
-      "boss": true,
-      "images": [
-        "EN-02",
-        "IT-02",
-        "IT-03",
-        "IT-04",
-        "IT-05",
-        "EV-03",
-        "NP-02",
-        "IT-09"
-      ],
-      "items": [],
-      "exits": [
-        "S7"
-      ],
-      "close": [
-        {
-          "successes": 1,
-          "tags": [
-            "F3",
-            "brooch"
-          ],
-          "min_memories": 2
-        }
-      ]
-    },
-    "S7": {
-      "file": "S7.md",
-      "milestone": true,
-      "critical": false,
-      "images": [
-        "EV-03",
-        "NP-01",
-        "BG-12",
-        "NP-02"
-      ],
-      "items": [],
-      "exits": []
-    },
-    "V1": {
-      "file": "inserts.md",
-      "insert": true,
-      "images": [
-        "EV-04"
-      ],
-      "items": [],
-      "exits": [
-        "S5"
-      ]
-    },
-    "V2": {
-      "file": "inserts.md",
-      "insert": true,
-      "images": [
-        "NP-03"
-      ],
-      "items": [],
-      "exits": [
-        "S5"
-      ]
-    },
-    "V3": {
-      "file": "inserts.md",
-      "insert": true,
-      "images": [
-        "NP-02"
-      ],
-      "items": [],
-      "exits": [
-        "S6"
-      ]
-    },
-    "V4": {
-      "file": "inserts.md",
-      "insert": true,
-      "images": [
-        "EV-05"
-      ],
-      "items": [],
-      "exits": [
-        "S6"
-      ]
-    }
-  },
-  "finale": {
-    "block": "S7"
+  "CK": {
+   "name": "Супер-Кіт",
+   "base": "Посох",
+   "super": "Котаклізм",
+   "super_fx": "LB-FX-01",
+   "cards": [
+    "LB-CH-02a",
+    "LB-CH-02b",
+    "LB-CH-02c"
+   ]
   }
+ },
+ "voices": {
+  "narrator": "Ведучий",
+  "NP-01": "Пан П'єр",
+  "EN-01": "Крокант-Мен",
+  "NP-02": "Софі",
+  "NP-03": "Мурка"
+ },
+ "vocabulary": [
+  "міледі",
+  "Котик",
+  "Акума",
+  "акуматизація",
+  "метелик",
+  "брошка",
+  "багет",
+  "сухарі",
+  "груша",
+  "полуниця",
+  "пожежна драбина",
+  "комора",
+  "горище",
+  "кухня",
+  "піч",
+  "Дружнє плече",
+  "Іскра",
+  "Несподіванка"
+ ],
+ "start_state": {
+  "block": "S0",
+  "participants": [
+   "LB",
+   "CK"
+  ],
+  "stars": 3,
+  "shield": 3,
+  "boss_phase": null,
+  "inventory": [],
+  "super_used": [],
+  "prepared": [],
+  "spark_pending": false
+ },
+ "items": {
+  "IT-02": {
+   "name": "Малюнок Софі",
+   "memory": true
+  },
+  "IT-03": {
+   "name": "Книга рецептів",
+   "memory": true
+  },
+  "IT-04": {
+   "name": "Теплий круасан",
+   "memory": true
+  },
+  "IT-05": {
+   "name": "Світлина П'єра з дітьми",
+   "memory": true
+  },
+  "IT-06": {
+   "name": "Мішок борошна"
+  },
+  "IT-07": {
+   "name": "Полуничний кошик",
+   "reinforcement": "ягоди"
+  },
+  "IT-08": {
+   "name": "Миска какао",
+   "reinforcement": true
+  },
+  "IT-09": {
+   "name": "Термос какао від Софі",
+   "reinforcement": true
+  }
+ },
+ "bonuses": [
+  {
+   "id": "quiet_entry",
+   "name": "Тихий вхід",
+   "value": 1,
+   "kind": "action",
+   "tags_all": [
+    "S4"
+   ],
+   "uses": 1,
+   "expires_on_leave": "S4"
+  },
+  {
+   "id": "surprise",
+   "name": "Несподіванка",
+   "value": 1,
+   "kind": "action",
+   "tags_all": [
+    "F1"
+   ],
+   "uses": 1,
+   "expires_on_phase_end": "F1",
+   "exclusive_group": "F1_prep"
+  },
+  {
+   "id": "flour_sack",
+   "name": "Мішок борошна",
+   "value": 1,
+   "kind": "action",
+   "tags_all": [
+    "F1",
+    "armor"
+   ],
+   "requires_item": "IT-06",
+   "uses": 1,
+   "expires_on_phase_end": "F1",
+   "exclusive_group": "F1_prep"
+  },
+  {
+   "id": "f2_item",
+   "name": "Предмет до ситуації",
+   "value": 1,
+   "kind": "action",
+   "tags_any": [
+    "item:IT-04",
+    "item:IT-07",
+    "item:IT-08"
+   ],
+   "tags_all": [
+    "F2"
+   ],
+   "uses": null
+  },
+  {
+   "id": "three_memories",
+   "name": "Три Спогади",
+   "value": 1,
+   "kind": "action",
+   "tags_all": [
+    "F3",
+    "brooch"
+   ],
+   "requires_memories": 3,
+   "uses": null
+  }
+ ],
+ "bonus_notes": "exclusive_group: на один кидок застосовується лише одна заготовка групи; інша чекає. Дружнє плече — коли hero = both. Іскра — spark_pending, згорає на найближчому кидку будь-якого героя, зокрема захисному. idea — прапорець від Ведучого.",
+ "client_images": {
+  "hero_cards": [
+   "LB-CH-01a",
+   "LB-CH-01b",
+   "LB-CH-01c",
+   "LB-CH-02a",
+   "LB-CH-02b",
+   "LB-CH-02c"
+  ],
+  "superpower_fx": [
+   "LB-FX-01",
+   "LB-FX-02"
+  ],
+  "joint_roll_fx": [
+   "LB-FX-03"
+  ],
+  "critical_success": [
+   "LB-WIN-a",
+   "LB-WIN-b",
+   "LB-WIN-c"
+  ],
+  "critical_success_joint": [
+   "LB-WIN-TEAM-a",
+   "LB-WIN-TEAM-b"
+  ],
+  "critical_fail": {
+   "LB": [
+    "LB-FAIL-a",
+    "LB-FAIL-b",
+    "LB-FAIL-c"
+   ],
+   "CK": [
+    "LB-FAIL-d",
+    "LB-FAIL-e",
+    "LB-FAIL-f"
+   ]
+  },
+  "critical_fail_joint": [
+   "LB-FAIL-TEAM-a",
+   "LB-FAIL-TEAM-b"
+  ],
+  "placeholders": {
+   "16:9": "LB-PH-a",
+   "1:1": "LB-PH-b"
+  },
+  "gate": "LB-UI-01",
+  "finale_bg": [
+   "LB-END-a",
+   "BG-12"
+  ]
+ },
+ "context": {
+  "always": [
+   "00_map.md"
+  ],
+  "boss": [
+   "boss_common.md"
+  ],
+  "boss_from": "S6",
+  "inserts": "inserts.md"
+ },
+ "blocks": {
+  "S0": {
+   "file": "S0.md",
+   "milestone": true,
+   "critical": false,
+   "images": [
+    "BG-01",
+    "NP-01",
+    "IT-04"
+   ],
+   "items": [
+    "IT-04"
+   ],
+   "exits": [
+    "S1"
+   ],
+   "rewards": [
+    {
+     "item": "IT-04",
+     "when": "choice"
+    }
+   ]
+  },
+  "S1": {
+   "file": "S1.md",
+   "milestone": true,
+   "critical": false,
+   "images": [
+    "BG-02",
+    "NP-02",
+    "IT-02"
+   ],
+   "items": [
+    "IT-02"
+   ],
+   "exits": [
+    "S2"
+   ],
+   "rewards": [
+    {
+     "item": "IT-02",
+     "when": "choice"
+    }
+   ]
+  },
+  "S2": {
+   "file": "S2.md",
+   "milestone": true,
+   "critical": false,
+   "images": [
+    "BG-03",
+    "EN-01"
+   ],
+   "items": [],
+   "exits": [
+    "S3А",
+    "S3Б"
+   ]
+  },
+  "S3А": {
+   "file": "S3A.md",
+   "milestone": false,
+   "critical": false,
+   "images": [
+    "BG-04",
+    "IT-07"
+   ],
+   "items": [
+    "IT-07"
+   ],
+   "prepared": [
+    "quiet_entry"
+   ],
+   "exits": [
+    "S4",
+    "S3Б"
+   ],
+   "rewards": [
+    {
+     "item": "IT-07",
+     "when": "roll"
+    },
+    {
+     "prepared": "quiet_entry",
+     "when": "roll"
+    }
+   ]
+  },
+  "S3Б": {
+   "file": "S3B.md",
+   "milestone": false,
+   "critical": false,
+   "images": [
+    "BG-05",
+    "IT-03"
+   ],
+   "items": [
+    "IT-03"
+   ],
+   "exits": [
+    "S4",
+    "S3А"
+   ],
+   "rewards": [
+    {
+     "item": "IT-03",
+     "when": "roll"
+    }
+   ]
+  },
+  "S4": {
+   "file": "S4.md",
+   "milestone": true,
+   "critical": false,
+   "images": [
+    "BG-06"
+   ],
+   "items": [],
+   "prepared": [
+    "surprise"
+   ],
+   "exits": [
+    "S5"
+   ],
+   "rewards": [
+    {
+     "prepared": "surprise",
+     "when": "roll"
+    }
+   ]
+  },
+  "S5": {
+   "file": "S5.md",
+   "milestone": true,
+   "critical": false,
+   "images": [
+    "BG-07"
+   ],
+   "items": [],
+   "exits": [
+    "S5а",
+    "S5б",
+    "S5в",
+    "S6"
+   ]
+  },
+  "S5а": {
+   "file": "S5a.md",
+   "milestone": false,
+   "critical": false,
+   "images": [
+    "BG-08",
+    "IT-06"
+   ],
+   "items": [
+    "IT-06"
+   ],
+   "exits": [
+    "S5",
+    "S5б",
+    "S5в",
+    "S6"
+   ],
+   "rewards": [
+    {
+     "item": "IT-06",
+     "when": "roll"
+    }
+   ]
+  },
+  "S5б": {
+   "file": "S5b.md",
+   "milestone": false,
+   "critical": false,
+   "images": [
+    "BG-09",
+    "IT-04",
+    "IT-08"
+   ],
+   "items": [
+    "IT-04",
+    "IT-08"
+   ],
+   "exits": [
+    "S5",
+    "S5а",
+    "S5в",
+    "S6"
+   ],
+   "rewards": [
+    {
+     "item": "IT-04",
+     "when": "roll",
+     "unless_has": "IT-04"
+    },
+    {
+     "item": "IT-08",
+     "when": "roll",
+     "requires": "IT-04"
+    }
+   ]
+  },
+  "S5в": {
+   "file": "S5v.md",
+   "milestone": false,
+   "critical": false,
+   "images": [
+    "BG-10",
+    "IT-03",
+    "IT-05"
+   ],
+   "items": [
+    "IT-03",
+    "IT-05"
+   ],
+   "exits": [
+    "S5",
+    "S5а",
+    "S5б",
+    "S6"
+   ],
+   "rewards": [
+    {
+     "item": "IT-03",
+     "when": "roll",
+     "unless_has": "IT-03"
+    },
+    {
+     "item": "IT-05",
+     "when": "has",
+     "requires": "IT-03"
+    }
+   ]
+  },
+  "S6": {
+   "file": "S6.md",
+   "milestone": true,
+   "critical": false,
+   "images": [
+    "BG-11",
+    "EN-01",
+    "NP-02",
+    "IT-02",
+    "IT-05"
+   ],
+   "items": [
+    "IT-02",
+    "IT-05"
+   ],
+   "exits": [
+    "F1"
+   ],
+   "rewards": [
+    {
+     "item": "IT-02",
+     "when": "auto",
+     "unless_has": "IT-02"
+    },
+    {
+     "item": "IT-05",
+     "when": "fallback",
+     "min_memories_below": 2
+    }
+   ]
+  },
+  "F1": {
+   "file": "F1.md",
+   "milestone": true,
+   "critical": true,
+   "boss": true,
+   "images": [
+    "BG-11",
+    "EN-01",
+    "EV-01",
+    "EV-06",
+    "EV-02",
+    "IT-06",
+    "IT-07",
+    "IT-08",
+    "IT-09",
+    "NP-02"
+   ],
+   "items": [
+    "IT-09"
+   ],
+   "exits": [
+    "F2"
+   ],
+   "close": [
+    {
+     "super": "CK"
+    },
+    {
+     "successes": 2,
+     "tags": [
+      "F1",
+      "armor"
+     ]
+    }
+   ],
+   "rewards": [
+    {
+     "item": "IT-09",
+     "when": "low_stars",
+     "max_stars": 1,
+     "unless_has": "IT-09"
+    }
+   ]
+  },
+  "F2": {
+   "file": "F2.md",
+   "milestone": true,
+   "critical": true,
+   "boss": true,
+   "images": [
+    "BG-11",
+    "EN-01",
+    "EV-07",
+    "EV-02",
+    "IT-04",
+    "IT-07",
+    "IT-08",
+    "IT-09",
+    "NP-02"
+   ],
+   "items": [
+    "IT-09"
+   ],
+   "exits": [
+    "F3"
+   ],
+   "close": [
+    {
+     "super": "LB"
+    },
+    {
+     "successes": 1,
+     "tags": [
+      "F2"
+     ],
+     "tags_any": [
+      "item:IT-04",
+      "item:IT-07",
+      "item:IT-08"
+     ]
+    },
+    {
+     "successes": 2,
+     "tags": [
+      "F2",
+      "jam"
+     ]
+    }
+   ],
+   "rewards": [
+    {
+     "item": "IT-09",
+     "when": "low_stars",
+     "max_stars": 1,
+     "unless_has": "IT-09"
+    }
+   ]
+  },
+  "F3": {
+   "file": "F3.md",
+   "milestone": true,
+   "critical": true,
+   "boss": true,
+   "images": [
+    "EN-02",
+    "IT-02",
+    "IT-03",
+    "IT-04",
+    "IT-05",
+    "EV-03",
+    "NP-02",
+    "IT-09"
+   ],
+   "items": [
+    "IT-09"
+   ],
+   "exits": [
+    "S7"
+   ],
+   "close": [
+    {
+     "successes": 1,
+     "tags": [
+      "F3",
+      "brooch"
+     ],
+     "min_memories": 2
+    }
+   ],
+   "rewards": [
+    {
+     "item": "IT-09",
+     "when": "low_stars",
+     "max_stars": 1,
+     "unless_has": "IT-09"
+    }
+   ]
+  },
+  "S7": {
+   "file": "S7.md",
+   "milestone": true,
+   "critical": false,
+   "images": [
+    "EV-03",
+    "NP-01",
+    "BG-12",
+    "NP-02"
+   ],
+   "items": [],
+   "exits": []
+  },
+  "V1": {
+   "file": "inserts.md",
+   "insert": true,
+   "images": [
+    "EV-04"
+   ],
+   "items": [],
+   "exits": [
+    "S5"
+   ]
+  },
+  "V2": {
+   "file": "inserts.md",
+   "insert": true,
+   "images": [
+    "NP-03"
+   ],
+   "items": [],
+   "exits": [
+    "S5"
+   ]
+  },
+  "V3": {
+   "file": "inserts.md",
+   "insert": true,
+   "images": [
+    "NP-02"
+   ],
+   "items": [],
+   "exits": [
+    "S6"
+   ]
+  },
+  "V4": {
+   "file": "inserts.md",
+   "insert": true,
+   "images": [
+    "EV-05"
+   ],
+   "items": [],
+   "exits": [
+    "S6"
+   ]
+  }
+ },
+ "finale": {
+  "block": "S7"
+ }
 }

@@ -1,8 +1,8 @@
 // Ігрова сесія: цикл етапу «повідомлення або кидок → запит до Ведучого → відповідь → стан і журнал».
-import { buildSystem, buildSchema } from "./context.js?v=20261107-2210";
-import { generate, responseText } from "./gemini.js?v=20261107-2210";
-import { newState, upgradeState, publicState, checkResponse, applyResponse, sanitizeNarration, cleanText } from "./state.js?v=20261107-2210";
-import { resolveRoll, criticalImage } from "./dice.js?v=20261107-2210";
+import { buildSystem, buildSchema } from "./context.js?v=20261107-2223";
+import { generate, responseText } from "./gemini.js?v=20261107-2223";
+import { newState, upgradeState, publicState, checkResponse, applyResponse, sanitizeNarration, cleanText } from "./state.js?v=20261107-2223";
+import { resolveRoll, criticalImage } from "./dice.js?v=20261107-2223";
 
 const KEEP_EXCHANGES = 8; // скільки останніх обмінів тримати в історії запиту: стан у запиті — джерело правди
 const JSON_REMINDER = "Попередня відповідь не була валідним JSON за схемою. Поверни лише JSON за схемою.";
@@ -116,6 +116,7 @@ export class Game {
     const { issues, fx } = applyResponse(m, this.state, resp, ctx, check.drop);
     const cta = resp.call_to_action?.text ? { hero: resp.call_to_action.hero, text: cleanText(resp.call_to_action.text, m, notes) } : null;
     this.awaiting = resp.await ?? { type: "answer", hero: "any" };
+    if (this.awaiting.type === "roll" && (check.drop.roll || check.drop.consult)) this.awaiting = { type: "answer", hero: this.awaiting.hero };
     const stage = {
       messages: input.messages,
       rolls: input.rolls,
