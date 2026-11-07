@@ -16,14 +16,25 @@ const SERVICE = /[⭐🟡]|\(\s*[+−-]\d\s*⭐?\s*\)/g;
 // Символи, яких не має бути в українському тексті для дітей (збої генерації: арабиця, CJK тощо).
 const FOREIGN = /[؀-ۿ֐-׿฀-๿぀-ヿ㐀-鿿가-힯]+/g;
 
+// Коди сцен і Спогадів (S3А, F2, V1, M1…) — з маніфесту; латинська й кирилична «А/Б/В» вважаються однаковими.
+const LOOKALIKE = { A: "[AА]", B: "[BБ]", "А": "[AА]", "Б": "[BБ]", "В": "[BВ]" };
+function codePattern(manifest) {
+  const blocks = Object.keys(manifest?.blocks ?? {}).map((c) => [...c].map((ch) => LOOKALIKE[ch] ?? ch).join(""));
+  const alts = [...blocks, "M\\d"].join("|");
+  // Код у дужках разом із дужками, або окремий код як слово.
+  return new RegExp(`\\s*\\(\\s*(?:${alts})\\s*\\)|(?<![\\p{L}\\d])(?:${alts})(?![\\p{L}\\d])`, "gu");
+}
+
 // Прибирає службове з тексту розповіді; повертає перелік зауважень для журналу.
-export function sanitizeNarration(narration) {
+export function sanitizeNarration(narration, manifest) {
   const notes = [];
+  const codes = codePattern(manifest);
   const clean = (narration ?? []).map((f) => {
     let t = String(f.text ?? "");
+    if (codes && t.search(codes) >= 0) { notes.push("коди сцен прибрано"); t = t.replace(codes, ""); }
     if (t.search(ID_IN_TEXT) >= 0) notes.push("ID у тексті прибрано");
     if (t.search(FOREIGN) >= 0) notes.push("чужі символи прибрано");
-    t = t.replace(ID_IN_TEXT, "").replace(SERVICE, "").replace(FOREIGN, "").replace(/\s{2,}/g, " ").trim();
+    t = t.replace(ID_IN_TEXT, "").replace(SERVICE, "").replace(FOREIGN, "").replace(/\s{2,}/g, " ").replace(/\s+([?!.,:;])/g, "$1").trim();
     return { voice: f.voice, text: t };
   }).filter((f) => f.text);
   return { narration: clean, notes };

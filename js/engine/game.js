@@ -95,7 +95,7 @@ export class Game {
       }
     }
 
-    const { narration, notes } = sanitizeNarration(resp.narration);
+    const { narration, notes } = sanitizeNarration(resp.narration, m);
     const { issues, fx } = applyResponse(m, this.state, resp, { blockBefore, messages: input.messages });
     this.awaiting = resp.await ?? { type: "answer", hero: "any" };
     const stage = {
