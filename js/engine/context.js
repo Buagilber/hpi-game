@@ -88,8 +88,10 @@ export function buildSchema(manifest, block) {
         },
         required: ["type", "hero"],
       },
+      // Обов'язковий заклик до дії (Z-01, Z-09): коротке питання до конкретного героя чи обох; застосунок показує його окремим рядком.
+      call_to_action: { type: O, properties: { hero: { type: S, enum: [...heroes, "both", "any"] }, text: { type: S } }, required: ["hero", "text"] },
       gm_note: { type: S },
     },
-    required: ["scene", "participants", "narration", "show", "state_changes", "await", "gm_note"],
+    required: ["scene", "participants", "narration", "call_to_action", "show", "state_changes", "await", "gm_note"],
   };
 }

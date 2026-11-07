@@ -20,7 +20,8 @@ export function askRoll({ who, roll }) {
         <div class="dice-modal__stage">${dieFace(6)}</div>
         <div class="dice-modal__actions">
           <button class="btn btn--primary btn--big" data-act="roll">🎲 Кинути</button>
-          <button class="btn" data-act="cancel">Написати замість кидка</button>
+          <button class="btn" data-act="cancel">Не кидати — відповісти словами</button>
+          <p class="dice-modal__hint">Кубик кидає лише застосунок. Щоб передумати чи запитати Ведучого — закрийте вікно і напишіть репліку.</p>
         </div>
       </div>`, { className: "modal__card--dice" });
     let rolling = false;

@@ -47,8 +47,13 @@ export function renderLog(cast, stages, index) {
   const narration = st.narration.map((f) => f.voice === "narrator"
     ? `<p>${esc(f.text)}</p>`
     : `<p><span class="gm__speaker">${esc(cast.voices[f.voice] ?? "")}:</span> ${esc(f.text)}</p>`);
-  const gm = st.narration.length
-    ? `<div class="gm"><button class="icon-btn gm__replay" data-replay aria-label="Озвучити ще раз">🔊</button>${narration.join("")}</div>`
+  // Заклик до дії (Z-01) і нагадування про кидок (Z-09) — окремими рядками в кінці відповіді.
+  const cta = st.callToAction?.text ? `<p class="gm__cta">${esc(st.callToAction.text)}</p>` : "";
+  const isLast = index === stages.length - 1;
+  const rollWho = st.awaiting?.hero === "both" ? "Разом" : nameOf(cast, st.awaiting?.hero);
+  const rollLine = isLast && st.awaiting?.type === "roll" ? `<p class="gm__roll">🎲 Ведучий чекає кидок: ${esc(rollWho)}</p>` : "";
+  const gm = st.narration.length || cta
+    ? `<div class="gm"><button class="icon-btn gm__replay" data-replay aria-label="Озвучити ще раз">🔊</button>${narration.join("")}${cta}${rollLine}</div>`
     : "";
   $("log-body").innerHTML = [...msgs, ...rolls, gm].join("");
 }

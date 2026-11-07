@@ -5,6 +5,7 @@ import { loadAdventure, loadSkill } from "./engine/content.js";
 import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js";
 import { rollDie } from "./engine/dice.js";
 import { askRoll, showRollInScene, markRollResult, hideRollInScene, showCritical } from "./ui/dice.js";
+import { showFinale } from "./ui/finale.js";
 import { Game } from "./engine/game.js";
 import * as store from "./engine/storage.js";
 import { speech } from "./ui/speech.js";
@@ -48,6 +49,7 @@ function draw() {
   renderInventory(s.inventory);
   const rollBtn = $("roll");
   rollBtn.hidden = aw.type !== "roll" || busy;
+  rollBtn.classList.toggle("is-waiting", aw.type === "roll" && !busy);
   if (aw.type === "roll") rollBtn.textContent = `🎲 Кидок: ${heroName(game.rollHero)}`;
   renderDrafts(cast, game.drafts, view >= game.stages.length - 1 && !busy);
   $("send").disabled = busy || game.finished;
@@ -65,16 +67,36 @@ function updateReplayButton() {
   btn.setAttribute("aria-label", on ? "Зупинити читання" : "Прочитати ще раз");
 }
 
+// Що озвучується: розповідь, а заклик до дії — останнім (Z-01).
+const spoken = (stage) => [...stage.narration, ...(stage.callToAction?.text ? [{ voice: "narrator", text: stage.callToAction.text }] : [])];
+
+// Фінал (Z-20): окремий запит фінальної промови → фінальний екран → архів.
+async function finish() {
+  setBusy(true); setStatus("Ведучий дописує останню сторінку історії…");
+  try {
+    if (!game.epilogue) await game.finale();
+  } catch (e) {
+    console.error(e);
+    setStatus("Не вдалося отримати фінальну промову.", { retry: () => finish() });
+    setBusy(false);
+    return;
+  }
+  setBusy(false); setStatus("");
+  if (!game.archived) { archive.add(game.toJSON(), { title: content.manifest.title, finished: true }); game.archived = true; }
+  store.save("session", game.toJSON());
+  speech.stop();
+  showFinale({ manifest: content.manifest, game, onNewGame: () => newGame(), onArchive: () => openArchive({ cast, title: content.manifest.title, onExportCurrent: exportCurrent }) });
+  speech.speak([{ voice: "narrator", text: game.epilogue.title }, ...game.epilogue.epilogue.map((t) => ({ voice: "narrator", text: t }))], { key: "finale" });
+}
+
+const exportCurrent = () => archive.download(game.toJSON(), archive.fileName({ adventure: content.manifest.adventure, endedAt: new Date().toISOString() }));
+
 function afterStage(stage) {
   view = game.stages.length - 1;
   const aw = stage.awaiting;
   if (aw.type === "answer" && aw.hero !== "any") active = aw.hero;
   store.save("session", game.toJSON());
-  if (game.finished && !game.archived) {
-    archive.add(game.toJSON(), { title: content.manifest.title, finished: true });
-    game.archived = true;
-    store.save("session", game.toJSON());
-  }
+
   const card = stage.show.find((id) => CARD_IMAGE.test(id));
   if (card) renderCard(card);
   draw();
@@ -86,7 +108,8 @@ async function run(action) {
     const stage = await action();
     if (stage.rolls.length) markRollResult(stage.rolls[0].success);
     afterStage(stage);
-    speech.speak(stage.narration, { key: game.stages.length - 1 });
+    speech.speak(spoken(stage), { key: game.stages.length - 1 });
+    if (game.finished) await finish();
     setStatus("");
   } catch (e) {
     console.error(e);
@@ -123,6 +146,13 @@ function passTurn() {
   if (busy || game.finished) return;
   addDraft();
   if (!game.drafts.length) return;
+  // Z-10: Ведучий чекав відповіді від обох, а в черзі репліки лише одного героя — м'яко нагадати.
+  const aw = game.awaiting;
+  const voices = new Set(game.drafts.map((d) => d.hero));
+  if (aw?.type === "answer" && aw.hero === "both" && game.state.participants.length > 1 && !voices.has("both") && voices.size < game.state.participants.length) {
+    const missing = game.state.participants.filter((h) => !voices.has(h)).map(heroName).join(", ");
+    if (!confirm(`${missing} ще не відповів(-ла). Передати хід усе одно?`)) return;
+  }
   const messages = [...game.drafts];
   speech.stop();
   hideRollInScene();
@@ -205,7 +235,7 @@ async function main() {
     // 🔊 / 🔇 (Z-14): якщо цей етап зараз читається — зупинити, інакше прочитати спочатку.
     if (e.target.closest("[data-replay]")) {
       if (speech.speakingKey === view) speech.stop();
-      else speech.speak(game.stages[view].narration, { force: true, key: view });
+      else speech.speak(spoken(game.stages[view]), { force: true, key: view });
     }
   });
   $("log-latest").addEventListener("click", () => { view = game.stages.length - 1; draw(); });
