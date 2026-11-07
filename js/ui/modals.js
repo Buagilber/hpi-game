@@ -1,5 +1,5 @@
 // Модальні вікна: вхід з ключем (чарівник, D-39), дисклеймер (D-25), меню.
-import { checkKey } from "../engine/gemini.js";
+import { checkKey } from "../engine/gemini.js?v=20261107-2210";
 
 const IMG = (id) => `content/images/${id}.jpg`;
 export const DISCLAIMER_VERSION = 1;

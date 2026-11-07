@@ -1,19 +1,19 @@
 // Точка входу: вхід з ключем і дисклеймер (E2), сесія гри з Ведучим (E3).
-import { castFromManifest, renderDrafts, renderScene, renderCards, renderEnemy, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js";
-import { askForKey, showDisclaimer, openMenu, askConfirm, DISCLAIMER_VERSION } from "./ui/modals.js";
-import { loadAdventure, loadSkill } from "./engine/content.js";
-import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js";
-import { rollDie } from "./engine/dice.js";
-import { askRoll, showRollInScene, markRollResult, hideRollInScene, showCritical } from "./ui/dice.js";
-import { showFinale } from "./ui/finale.js";
-import { Game } from "./engine/game.js";
-import * as store from "./engine/storage.js";
-import { speech } from "./ui/speech.js";
-import { soundSettings } from "./ui/sound.js";
-import { createRecorder } from "./ui/voice.js";
-import { openInventory } from "./ui/inventory.js";
-import { askResume, openArchive } from "./ui/archive.js";
-import * as archive from "./engine/archive.js";
+import { castFromManifest, renderDrafts, renderScene, renderCards, renderEnemy, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js?v=20261107-2210";
+import { askForKey, showDisclaimer, openMenu, askConfirm, DISCLAIMER_VERSION } from "./ui/modals.js?v=20261107-2210";
+import { loadAdventure, loadSkill } from "./engine/content.js?v=20261107-2210";
+import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js?v=20261107-2210";
+import { rollDie } from "./engine/dice.js?v=20261107-2210";
+import { askRoll, showRollInScene, markRollResult, hideRollInScene, showCritical } from "./ui/dice.js?v=20261107-2210";
+import { showFinale } from "./ui/finale.js?v=20261107-2210";
+import { Game } from "./engine/game.js?v=20261107-2210";
+import * as store from "./engine/storage.js?v=20261107-2210";
+import { speech } from "./ui/speech.js?v=20261107-2210";
+import { soundSettings } from "./ui/sound.js?v=20261107-2210";
+import { createRecorder } from "./ui/voice.js?v=20261107-2210";
+import { openInventory } from "./ui/inventory.js?v=20261107-2210";
+import { askResume, openArchive } from "./ui/archive.js?v=20261107-2210";
+import * as archive from "./engine/archive.js?v=20261107-2210";
 
 const ADVENTURE = "content/adventures/adventure_1_v4";
 const SKILL = "content/skill/gamemaster.md";
@@ -102,7 +102,6 @@ async function finish() {
   store.save("session", game.toJSON());
   speech.stop();
   showFinale({ manifest: content.manifest, game, onNewGame: () => newGame(), onArchive: () => openArchive({ cast, title: content.manifest.title, onExportCurrent: exportCurrent }) });
-  speech.speak([{ voice: "narrator", text: game.epilogue.title }, ...game.epilogue.epilogue.map((t) => ({ voice: "narrator", text: t }))], { key: "finale" });
 }
 
 const exportCurrent = () => archive.download(game.toJSON(), archive.fileName({ adventure: content.manifest.adventure, endedAt: new Date().toISOString() }));

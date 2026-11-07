@@ -1,8 +1,8 @@
 // Ігрова сесія: цикл етапу «повідомлення або кидок → запит до Ведучого → відповідь → стан і журнал».
-import { buildSystem, buildSchema } from "./context.js";
-import { generate, responseText } from "./gemini.js";
-import { newState, upgradeState, publicState, checkResponse, applyResponse, sanitizeNarration, cleanText } from "./state.js";
-import { resolveRoll, criticalImage } from "./dice.js";
+import { buildSystem, buildSchema } from "./context.js?v=20261107-2210";
+import { generate, responseText } from "./gemini.js?v=20261107-2210";
+import { newState, upgradeState, publicState, checkResponse, applyResponse, sanitizeNarration, cleanText } from "./state.js?v=20261107-2210";
+import { resolveRoll, criticalImage } from "./dice.js?v=20261107-2210";
 
 const KEEP_EXCHANGES = 8; // скільки останніх обмінів тримати в історії запиту: стан у запиті — джерело правди
 const JSON_REMINDER = "Попередня відповідь не була валідним JSON за схемою. Поверни лише JSON за схемою.";

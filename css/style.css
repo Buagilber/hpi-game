@@ -260,21 +260,27 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .composer .btn--roll.is-waiting { animation: pulse 1.1s ease-in-out infinite; box-shadow: 0 0 0 4px var(--gold-soft); }
 .dice-modal__hint { color: var(--muted); font-size: 14px; max-width: 360px; margin: 4px auto 0; }
 
-/* фінальний екран (Z-20) */
-.finale { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 16px; background-size: cover; background-position: center; }
-.finale::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #1d1520aa, #1d1520f0); }
-.finale__card { position: relative; width: min(760px, 100%); max-height: 92vh; overflow-y: auto; background: #2a1f2ce6; border: 1px solid var(--gold); border-radius: 20px; padding: 28px 32px; box-shadow: var(--shadow); text-align: center; }
+/* фінальний екран (Z-20, Z-34): один екран, текст прокручується всередині, кнопки внизу */
+body.has-finale { overflow: hidden; }
+.finale { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 16px; background: var(--bg) center / cover no-repeat; }
+.finale::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #1d152099, #1d1520e6); }
+.finale__card { position: relative; width: min(780px, 100%); height: min(92vh, 900px); display: flex; flex-direction: column; background: #2a1f2ce6; border: 1px solid var(--gold); border-radius: 20px; box-shadow: var(--shadow); overflow: hidden; }
+.finale__head { text-align: center; padding: 22px 28px 8px; flex-shrink: 0; }
 .finale__kicker { color: var(--muted); letter-spacing: 3px; text-transform: uppercase; font-size: 14px; }
-.finale__title { color: var(--gold); font-size: 34px; margin: 6px 0 16px; }
-.finale__text { text-align: left; font-size: 19px; }
+.finale__title { color: var(--gold); font-size: 32px; margin: 6px 0 0; }
+.finale__scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 8px 32px 16px; scroll-behavior: smooth; }
+.finale__text { font-size: 19px; }
 .finale__text p { margin: 0 0 12px; }
-.finale__end { font-size: 26px; font-weight: 800; color: var(--gold); margin: 10px 0 18px; }
-.finale__highlights { text-align: left; background: var(--panel-2); border-radius: 12px; padding: 12px 18px; margin-bottom: 14px; }
-.finale__highlights h3 { margin: 0 0 6px; color: var(--gold); font-size: 17px; }
+.finale__end { text-align: center; font-size: 26px; font-weight: 800; color: var(--gold); margin: 10px 0 18px; }
+.finale__after { animation: pop .5s ease-out; }
+.finale__highlights, .finale__found { background: var(--panel-2); border-radius: 12px; padding: 12px 18px; margin-bottom: 12px; }
+.finale__highlights h3, .finale__found h3 { margin: 0 0 8px; color: var(--gold); font-size: 17px; }
 .finale__highlights ul { margin: 0; padding-left: 20px; }
-.finale__stats { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 18px; }
-.finale__stats img { width: 54px; height: 54px; border-radius: 10px; object-fit: cover; }
-.finale__actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+.finale__strip { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x mandatory; }
+.finale__strip figure { margin: 0; flex: 0 0 110px; text-align: center; scroll-snap-align: start; }
+.finale__strip img { width: 110px; height: 110px; border-radius: 12px; object-fit: cover; border: 2px solid var(--line); }
+.finale__strip figcaption { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.finale__actions { flex-shrink: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 14px 20px; border-top: 1px solid var(--line); background: #2a1f2c; }
 .gm__replay.is-speaking { border-color: var(--gold); animation: pulse 1.2s ease-in-out infinite; }
 
 /* ---------- низ: керування ---------- */
@@ -369,7 +375,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .modal {
   position: fixed;
   inset: 0;
-  z-index: 10;
+  z-index: 50;   /* поверх фінального екрана, щоб з нього можна було відкрити архів */
   display: grid;
   place-items: center;
   padding: 16px;

@@ -2,7 +2,7 @@
 
 export async function loadAdventure(base) {
   const getText = async (path) => {
-    const res = await fetch(`${base}/${path}`);
+    const res = await fetch(`${base}/${path}`, { cache: "no-cache" }); // контент змінюється з версіями — завжди перевіряти свіжість
     if (!res.ok) throw new Error(`Не вдалося завантажити ${path}`);
     return res.text();
   };
@@ -19,7 +19,7 @@ export async function loadAdventure(base) {
 }
 
 export async function loadSkill(path) {
-  const res = await fetch(path);
+  const res = await fetch(path, { cache: "no-cache" });
   if (!res.ok) throw new Error("Не вдалося завантажити скіл Ведучого");
   return res.text();
 }

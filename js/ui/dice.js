@@ -1,7 +1,7 @@
 // Модалка кубика (D-05, D-20): одна кнопка для героя чи спільного кидка, анімація, звук.
 // Число на кубику лишається у вікні сцени; критична картинка — поверх сцени (D-21).
-import { openModal } from "./modals.js";
-import { sound } from "./sound.js";
+import { openModal } from "./modals.js?v=20261107-2210";
+import { sound } from "./sound.js?v=20261107-2210";
 
 const IMG = (id) => `content/images/${id}.jpg`;
 const PIPS = { 1: [5], 2: [1, 9], 3: [1, 5, 9], 4: [1, 3, 7, 9], 5: [1, 3, 5, 7, 9], 6: [1, 3, 4, 6, 7, 9] };

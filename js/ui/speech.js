@@ -34,7 +34,8 @@ export const speech = {
   },
 
   // fragments: [{ voice, text }] — читаємо по реченнях: довгі фрази в деяких браузерах обриваються.
-  speak(fragments, { force = false, key = null } = {}) {
+  // onProgress(i, total) — коли починає звучати речення i (для автопрокрутки фінального тексту).
+  speak(fragments, { force = false, key = null, onProgress = null } = {}) {
     if (!synth || (!enabled && !force)) return;
     synth.cancel();
     const sentences = fragments
@@ -49,6 +50,7 @@ export const speech = {
       u.lang = "uk-UA";
       if (voice) u.voice = voice;
       u.rate = 0.95;
+      if (onProgress) u.onstart = () => { if (run === myRun) onProgress(i, sentences.length); };
       if (i === sentences.length - 1) u.onend = () => { if (run === myRun) { speakingKey = null; notify(); } };
       synth.speak(u);
     });
