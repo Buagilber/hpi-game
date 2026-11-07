@@ -16,12 +16,12 @@ export function askRoll({ who, roll }) {
   return new Promise((resolve) => {
     const { root, close } = openModal(`
       <div class="dice-modal">
+        <button class="icon-btn dice-modal__close" data-act="cancel" aria-label="Закрити без кидка">✕</button>
         <h2>Кидок: ${who}</h2>
         <div class="dice-modal__stage">${dieFace(6)}</div>
         <div class="dice-modal__actions">
           <button class="btn btn--primary btn--big" data-act="roll">🎲 Кинути</button>
-          <button class="btn" data-act="cancel">Не кидати — відповісти словами</button>
-          <p class="dice-modal__hint">Кубик кидає лише застосунок. Щоб передумати чи запитати Ведучого — закрийте вікно і напишіть репліку.</p>
+          <p class="dice-modal__hint">Результат кидка одразу побачить Ведучий. Хочете спершу щось уточнити чи передумали — закрийте вікно ✕ і напишіть репліку.</p>
         </div>
       </div>`, { className: "modal__card--dice" });
     let rolling = false;

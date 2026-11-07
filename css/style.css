@@ -108,7 +108,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .die--landed { animation: land .35s ease-out; }
 @keyframes land { 0% { transform: scale(1.25); } 100% { transform: scale(1); } }
 
-.dice-modal { text-align: center; }
+.dice-modal { text-align: center; position: relative; }
+.dice-modal__close { position: absolute; top: -8px; right: -12px; }
 .dice-modal__stage { display: grid; place-items: center; height: 200px; }
 .dice-modal__actions { display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .btn--big { font-size: 22px; padding: 14px 32px; }
