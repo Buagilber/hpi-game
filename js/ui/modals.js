@@ -14,6 +14,29 @@ export function openModal(html, { className = "", dismissible = false } = {}) {
   return { root, close };
 }
 
+// Ігрове вікно підтвердження замість системного confirm(): у стилі гри, з картинкою за потреби.
+export function askConfirm({ title, text, image = null, ok = "Так", cancel = "Скасувати", danger = false }) {
+  return new Promise((resolve) => {
+    const { root, close } = openModal(`
+      <div class="confirm">
+        ${image ? `<img class="confirm__img" src="${IMG(image)}" alt="">` : ""}
+        <h2>${title}</h2>
+        ${text ? `<p>${text}</p>` : ""}
+        <div class="confirm__actions">
+          <button class="btn" data-act="cancel">${cancel}</button>
+          <button class="btn ${danger ? "btn--danger" : "btn--primary"}" data-act="ok">${ok}</button>
+        </div>
+      </div>`, { className: "modal__card--confirm" });
+    root.querySelector("[data-act=ok]").focus();
+    root.addEventListener("click", (e) => {
+      const act = e.target.closest("[data-act]")?.dataset.act;
+      if (!act) return;
+      close();
+      resolve(act === "ok");
+    });
+  });
+}
+
 const KEY_ERRORS = {
   invalid_key: "Чарівник хитає головою: цей ключ не підходить. Перевірте, чи скопійовано його повністю.",
   network: "Не вдалося зв'язатися з Gemini. Перевірте інтернет і спробуйте ще раз.",
@@ -111,7 +134,7 @@ export function openMenu({ speechOn, onToggleSpeech, soundsOn, onToggleSounds, o
     const act = e.target.closest("[data-act]")?.dataset.act;
     if (!act) return;
     close();
-    if (act === "new" && confirm("Почати нову гру? Поточна гра закінчиться.")) onNewGame();
+    if (act === "new") askConfirm({ title: "Почати нову гру?", text: "Поточна гра перейде в архів.", ok: "Нова гра", cancel: "Грати далі" }).then((yes) => yes && onNewGame());
     if (act === "speech") onToggleSpeech();
     if (act === "sounds") onToggleSounds();
     if (act === "archive") onArchive();

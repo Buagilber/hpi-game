@@ -1,6 +1,6 @@
 // Точка входу: вхід з ключем і дисклеймер (E2), сесія гри з Ведучим (E3).
 import { castFromManifest, renderDrafts, renderScene, renderCard, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js";
-import { askForKey, showDisclaimer, openMenu, DISCLAIMER_VERSION } from "./ui/modals.js";
+import { askForKey, showDisclaimer, openMenu, askConfirm, DISCLAIMER_VERSION } from "./ui/modals.js";
 import { loadAdventure, loadSkill } from "./engine/content.js";
 import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js";
 import { rollDie } from "./engine/dice.js";
@@ -142,7 +142,7 @@ function addDraft(e) {
   return true;
 }
 
-function passTurn() {
+async function passTurn() {
   if (busy || game.finished) return;
   addDraft();
   if (!game.drafts.length) return;
@@ -150,8 +150,16 @@ function passTurn() {
   const aw = game.awaiting;
   const voices = new Set(game.drafts.map((d) => d.hero));
   if (aw?.type === "answer" && aw.hero === "both" && game.state.participants.length > 1 && !voices.has("both") && voices.size < game.state.participants.length) {
-    const missing = game.state.participants.filter((h) => !voices.has(h)).map(heroName).join(", ");
-    if (!confirm(`${missing} ще не відповів(-ла). Передати хід усе одно?`)) return;
+    // Ігрове вікно (без статі в тексті): аватар героя, що ще не відповів.
+    const silent = game.state.participants.filter((h) => !voices.has(h));
+    const yes = await askConfirm({
+      title: `${silent.map(heroName).join(" і ")} ще мовчить`,
+      text: "Ведучий чекав відповіді від обох героїв. Дати слово ще й цьому герою чи передати хід уже зараз?",
+      image: cast.heroes.find((x) => x.id === silent[0])?.card,
+      ok: "Передати хід",
+      cancel: "Зачекати",
+    });
+    if (!yes) return;
   }
   const messages = [...game.drafts];
   speech.stop();

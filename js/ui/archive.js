@@ -1,5 +1,5 @@
 // Екрани збереження (D-27): «Продовжити гру?», архів ігор з переглядом журналу, експорт і імпорт.
-import { openModal } from "./modals.js";
+import { openModal, askConfirm } from "./modals.js";
 import { esc } from "./screen.js";
 import * as archive from "../engine/archive.js";
 
@@ -69,7 +69,7 @@ export function openArchive({ cast, title, onExportCurrent }) {
     if (act === "close") close();
     if (act === "export-current") onExportCurrent();
     if (act === "export") { const entry = archive.get(id); archive.download(entry, archive.fileName(entry)); }
-    if (act === "delete" && confirm("Видалити цю гру з архіву?")) { archive.remove(id); refresh(); }
+    if (act === "delete") askConfirm({ title: "Видалити гру з архіву?", text: "Її журнал зникне назавжди.", ok: "Видалити", cancel: "Залишити", danger: true }).then((yes) => { if (yes) { archive.remove(id); refresh(); } });
     if (act === "view") viewSession(cast, archive.get(id));
   });
 }
