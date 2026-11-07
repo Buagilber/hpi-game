@@ -32,6 +32,7 @@
           <button class="icon-btn" id="log-next" aria-label="Наступний етап">▼</button>
         </header>
         <div class="log__body" id="log-body"></div>
+        <div class="drafts" id="drafts" hidden></div>
         <button class="btn log__latest" id="log-latest" hidden>До поточного етапу ⤓</button>
         <div class="log__status" id="status" hidden></div>
       </aside>
@@ -49,7 +50,8 @@
         <button type="button" class="btn btn--roll" id="roll" hidden></button>
         <textarea id="input" rows="2" placeholder="Що роблять герої?"></textarea>
         <button type="button" class="icon-btn icon-btn--big" id="mic" aria-label="Надиктувати">🎤</button>
-        <button type="submit" class="icon-btn icon-btn--big icon-btn--primary" id="send" aria-label="Надіслати">➤</button>
+        <button type="submit" class="icon-btn icon-btn--big" id="send" aria-label="Додати репліку в чергу" title="Додати репліку (Enter)">➤</button>
+        <button type="button" class="btn btn--primary btn--pass" id="pass">Передати хід</button>
       </form>
     </footer>
   </div>

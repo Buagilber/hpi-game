@@ -1,5 +1,5 @@
 // Точка входу: вхід з ключем і дисклеймер (E2), сесія гри з Ведучим (E3).
-import { castFromManifest, renderScene, renderCard, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js";
+import { castFromManifest, renderDrafts, renderScene, renderCard, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js";
 import { askForKey, showDisclaimer, openMenu, DISCLAIMER_VERSION } from "./ui/modals.js";
 import { loadAdventure, loadSkill } from "./engine/content.js";
 import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js";
@@ -48,7 +48,9 @@ function draw() {
   const rollBtn = $("roll");
   rollBtn.hidden = aw.type !== "roll" || busy;
   if (aw.type === "roll") rollBtn.textContent = `🎲 Кидок: ${heroName(game.rollHero)}`;
+  renderDrafts(cast, game.drafts, view >= game.stages.length - 1 && !busy);
   $("send").disabled = busy || game.finished;
+  $("pass").disabled = busy || game.finished;
   $("input").disabled = busy || game.finished;
 }
 
@@ -94,14 +96,36 @@ function errorText(e) {
   })[e.kind] ?? "Щось пішло не так. Спробуйте ще раз.";
 }
 
-function send(e) {
-  e.preventDefault();
+// Чернетки (Z-03): ➤ додає репліку активного героя в чергу, «Передати хід» надсилає всю чергу Ведучому одним запитом.
+function addDraft(e) {
+  e?.preventDefault();
   const text = $("input").value.trim();
-  if (!text || busy || game.finished) return;
+  if (!text || busy || game.finished) return false;
+  game.drafts.push({ hero: active, text });
   $("input").value = "";
+  store.save("session", game.toJSON());
+  draw();
+  return true;
+}
+
+function passTurn() {
+  if (busy || game.finished) return;
+  addDraft();
+  if (!game.drafts.length) return;
+  const messages = [...game.drafts];
   speech.stop();
   hideRollInScene();
-  run(() => game.sendMessages([{ hero: active, text }]));
+  run(async () => {
+    const stage = await game.sendMessages(messages);
+    game.drafts = [];
+    return stage;
+  });
+}
+
+function removeLastDraft() {
+  game.drafts.pop();
+  store.save("session", game.toJSON());
+  draw();
 }
 
 // Кидок (E4): модалка → анімація → число у сцені → критична картинка (поки Ведучий думає) → підсвітка після відповіді.
@@ -111,7 +135,13 @@ async function roll() {
   const value = await askRoll({ who: heroName(game.rollHero), roll: rollDie });
   if (value === null) { $("input").focus(); return; }
   showRollInScene(value);
-  run(() => game.sendRoll(value, ({ result, critImage }) => { showCritical({ critical: result.critical, image: critImage }); }));
+  addDraft();
+  const messages = [...game.drafts];
+  run(async () => {
+    const stage = await game.sendRoll(value, ({ result, critImage }) => { showCritical({ critical: result.critical, image: critImage }); }, messages);
+    game.drafts = [];
+    return stage;
+  });
 }
 
 // Слова гри для розпізнавання голосу: імена, здібності, NPC, предмети з маніфесту.
@@ -154,8 +184,10 @@ async function main() {
 
   $("log-prev").addEventListener("click", () => { view = Math.max(0, view - 1); draw(); });
   $("log-next").addEventListener("click", () => { view = Math.min(game.stages.length - 1, view + 1); draw(); });
-  $("composer").addEventListener("submit", send);
-  $("input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) send(e); });
+  $("composer").addEventListener("submit", addDraft);
+  $("input").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) addDraft(e); });
+  $("pass").addEventListener("click", passTurn);
+  $("drafts").addEventListener("click", (e) => { if (e.target.closest("[data-remove-last]")) removeLastDraft(); });
   $("roll").addEventListener("click", roll);
   $("inventory").addEventListener("click", () => openInventory(content.manifest, game.state));
   $("log-body").addEventListener("click", (e) => {

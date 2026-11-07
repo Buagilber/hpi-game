@@ -106,3 +106,17 @@ export function setStatus(text, { retry } = {}) {
     el.append(b);
   }
 }
+
+// Черга реплік, ще не переданих Ведучому (Z-03). Прибрати можна лише останню — порядок діалогу не ламається.
+export function renderDrafts(cast, drafts, visible) {
+  const box = $("drafts");
+  box.hidden = !visible || !drafts.length;
+  if (box.hidden) { box.innerHTML = ""; return; }
+  box.innerHTML = `<div class="drafts__title">Ще не передано Ведучому</div>` + drafts.map((m, i) => `
+    <p class="msg msg--${slotClass(cast, m.hero)} msg--draft">
+      <span class="msg__who">${esc(nameOf(cast, m.hero))}</span>
+      ${i === drafts.length - 1 ? '<button class="icon-btn drafts__remove" data-remove-last aria-label="Прибрати останню репліку">✕</button>' : ""}
+      <br>${esc(m.text)}
+    </p>`).join("");
+  box.scrollTop = box.scrollHeight;
+}

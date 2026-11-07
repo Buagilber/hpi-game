@@ -20,6 +20,7 @@ export class Game {
     this.awaiting = saved?.awaiting ?? null;
     this.lastCritImage = saved?.lastCritImage ?? null;
     this.archived = saved?.archived ?? false;
+    this.drafts = saved?.drafts ?? [];   // репліки героїв, ще не передані Ведучому (Z-03)
     this.pending = null;                 // запит, що не отримав відповіді (для «Спробувати ще раз»)
     this.onStatus = () => {};
   }
@@ -28,8 +29,8 @@ export class Game {
   get finished() { return this.awaiting?.type === "end"; }
 
   toJSON() {
-    const { state, stages, turns, turnsUsed, awaiting, lastCritImage, archived } = this;
-    return { version: 1, adventure: this.manifest.adventure, state, stages, turns, turnsUsed, awaiting, lastCritImage, archived };
+    const { state, stages, turns, turnsUsed, awaiting, lastCritImage, archived, drafts } = this;
+    return { version: 1, adventure: this.manifest.adventure, state, stages, turns, turnsUsed, awaiting, lastCritImage, archived, drafts };
   }
 
   start() {
@@ -49,12 +50,12 @@ export class Game {
 
   // Кидок: число на кубику → розрахунок бонусів і успіху на клієнті (D-46) → результат Ведучому.
   // onResolved({ result, critImage }) викликається до запиту: застосунок показує критичну картинку, поки Ведучий думає.
-  async sendRoll(value, onResolved) {
+  async sendRoll(value, onResolved, messages = []) {
     const result = resolveRoll(this.manifest, this.state, this.rollHero, this.awaiting?.roll, value);
     const critImage = criticalImage(this.manifest, result, this.lastCritImage);
     if (critImage) this.lastCritImage = critImage;
     await onResolved?.({ result, critImage });
-    return this.#exchange({ messages: [], rolls: [result] }, { critImage });
+    return this.#exchange({ messages, rolls: [result] }, { critImage });
   }
 
   retry() {
