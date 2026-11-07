@@ -1,5 +1,5 @@
 // Точка входу: вхід з ключем і дисклеймер (E2), сесія гри з Ведучим (E3).
-import { castFromManifest, renderDrafts, renderScene, renderCard, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js";
+import { castFromManifest, renderDrafts, renderScene, renderCards, renderEnemy, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js";
 import { askForKey, showDisclaimer, openMenu, askConfirm, DISCLAIMER_VERSION } from "./ui/modals.js";
 import { loadAdventure, loadSkill } from "./engine/content.js";
 import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js";
@@ -17,8 +17,9 @@ import * as archive from "./engine/archive.js";
 
 const ADVENTURE = "content/adventures/adventure_1_v4";
 const SKILL = "content/skill/gamemaster.md";
-const MAIN_IMAGE = /^(BG|EV|EN)-/;   // фон сцени 16:9 і ключові моменти
-const CARD_IMAGE = /^(NP|IT)-/;      // персонажі й предмети 1:1 — карткою поверх сцени
+const MAIN_IMAGE = /^(BG|EV)-/;      // фон сцени і ключові моменти 16:9
+const CARD_IMAGE = /^(NP|IT|EN)-/;   // персонажі, вороги й предмети 1:1 — карткою поверх сцени
+const ENEMY_IMAGE = /^EN-/;          // у бою портрет ворога лишається на екрані (Z-29)
 
 let content, skill, cast, game;
 let view = 0;
@@ -26,6 +27,20 @@ let active = null;
 let busy = false;
 
 const $ = (id) => document.getElementById(id);
+
+// Портрет ворога видно від сцени входу в арену до кінця бою: останній показаний EN-*.
+function currentEnemy() {
+  const order = Object.keys(content.manifest.blocks);
+  const from = order.indexOf(content.manifest.context.boss_from);
+  const b = game.state.block;
+  const inBoss = from >= 0 && order.indexOf(b) >= from && !content.manifest.blocks[b]?.insert && b !== content.manifest.finale?.block;
+  if (!inBoss || game.state.boss_phase === "done") return null;
+  for (let i = game.stages.length - 1; i >= 0; i--) {
+    const img = game.stages[i].show.find((id) => ENEMY_IMAGE.test(id));
+    if (img) return img;
+  }
+  return null;
+}
 
 function currentImage() {
   for (let i = game.stages.length - 1; i >= 0; i--) {
@@ -41,6 +56,7 @@ function draw() {
   const heroIds = cast.heroes.map((h) => h.id);
   if (!active || !(s.participants.includes(active) || active === "both")) active = s.participants[0] ?? heroIds[0];
   renderScene(currentImage());
+  renderEnemy(currentEnemy());
   renderHud({ stars: s.stars, starsMax: content.manifest.rules.stars_max, shield: s.boss_phase && s.boss_phase !== "done" ? s.shield : null, shieldMax: content.manifest.rules.shield });
   renderLog(cast, game.stages, view);
   updateReplayButton();
@@ -97,8 +113,9 @@ function afterStage(stage) {
   if (aw.type === "answer" && aw.hero !== "any") active = aw.hero;
   store.save("session", game.toJSON());
 
-  const card = stage.show.find((id) => CARD_IMAGE.test(id));
-  if (card) renderCard(card);
+  // Картки: ворог у бою вже видно портретом, тому карткою — лише поза боєм.
+  const cards = stage.show.filter((id) => CARD_IMAGE.test(id) && !(ENEMY_IMAGE.test(id) && currentEnemy()));
+  if (cards.length) renderCards(cards.slice(0, 3));
   draw();
 }
 

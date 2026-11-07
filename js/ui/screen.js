@@ -82,14 +82,20 @@ export function renderInventory(items) {
   $("inventory").innerHTML = `<span class="inventory__label">🎒</span>${icons || '<span class="inventory__empty">порожньо</span>'}`;
 }
 
-// Картка персонажа чи предмета поверх сцени на кілька секунд.
-let cardTimer;
-export function renderCard(imageId) {
-  const el = $("scene-card");
-  el.src = IMG(imageId);
-  el.hidden = false;
-  clearTimeout(cardTimer);
-  cardTimer = setTimeout(() => { el.hidden = true; }, 5000);
+// Картки персонажів і предметів (1:1) поверх сцени на кілька секунд; кілька — рядком.
+let cardsTimer;
+export function renderCards(imageIds) {
+  const box = $("scene-cards");
+  box.innerHTML = imageIds.map((id) => `<img class="scene__card" src="${IMG(id)}" alt="">`).join("");
+  clearTimeout(cardsTimer);
+  cardsTimer = setTimeout(() => { box.innerHTML = ""; }, 6000);
+}
+
+// Портрет ворога (Z-29): у бою видно весь час, щоб було зрозуміло, з ким герої мають справу.
+export function renderEnemy(imageId) {
+  const el = $("scene-enemy");
+  el.hidden = !imageId;
+  if (imageId && el.dataset.id !== imageId) { el.dataset.id = imageId; el.src = IMG(imageId); }
 }
 
 // Очікування Ведучого: сцена тьмяніє, по ній пливуть іскри (D-26).

@@ -137,16 +137,33 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .crit--funny_fail .crit__label { color: var(--fail); }
 .crit__emoji { font-size: 140px; }
 
-.scene__card {
+.scene__cards {
   position: absolute;
   top: 70px;
   right: 18px;
-  width: 26%;
-  max-width: 220px;
+  display: flex;
+  gap: 10px;
+  max-width: 60%;
+  pointer-events: none;
+}
+.scene__card {
+  width: clamp(110px, 18vw, 200px);
   aspect-ratio: 1;
   object-fit: cover;
   border-radius: 14px;
   border: 3px solid var(--gold);
+  box-shadow: var(--shadow);
+  animation: pop .4s ease-out;
+}
+.scene__enemy {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  width: clamp(130px, 22vw, 240px);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 3px solid var(--fail);
   box-shadow: var(--shadow);
   animation: pop .4s ease-out;
 }
