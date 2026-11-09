@@ -1,7 +1,7 @@
 // Екрани збереження (D-27): «Продовжити гру?», архів ігор з переглядом журналу, експорт і імпорт.
-import { openModal, askConfirm } from "./modals.js?v=20261107-2223";
-import { esc } from "./screen.js?v=20261107-2223";
-import * as archive from "../engine/archive.js?v=20261107-2223";
+import { openModal, askConfirm } from "./modals.js?v=20261109-1826";
+import { esc } from "./screen.js?v=20261109-1826";
+import * as archive from "../engine/archive.js?v=20261109-1826";
 
 const fmt = (iso) => new Date(iso).toLocaleString("uk-UA", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
 

@@ -94,9 +94,9 @@ function reachableFrom(manifest, block) {
   return b ? [block, ...b.exits] : [];
 }
 
-// Успіхи кидків цього етапу, що зараховуються у фазу (спільний успіх = 2, Z-16).
+// Успіхи кидків цього етапу, що зараховуються у фазу (спільний успіх = 2, Z-16). Захист фазу не закриває (Z-43).
 function stageSuccesses(manifest, ctx, cond) {
-  if (!ctx.rollTags?.length) return 0;
+  if (!ctx.rollTags?.length || ctx.rollKind === "defense") return 0;
   const tags = new Set(ctx.rollTags);
   if (!(cond.tags ?? []).every((t) => tags.has(t))) return 0;
   if (cond.tags_any && !cond.tags_any.some((t) => tags.has(t))) return 0;

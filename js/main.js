@@ -1,19 +1,19 @@
 // Точка входу: вхід з ключем і дисклеймер (E2), сесія гри з Ведучим (E3).
-import { castFromManifest, renderDrafts, renderScene, renderCards, renderEnemy, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js?v=20261107-2223";
-import { askForKey, showDisclaimer, openMenu, askConfirm, DISCLAIMER_VERSION } from "./ui/modals.js?v=20261107-2223";
-import { loadAdventure, loadSkill } from "./engine/content.js?v=20261107-2223";
-import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js?v=20261107-2223";
-import { rollDie } from "./engine/dice.js?v=20261107-2223";
-import { askRoll, showRollInScene, markRollResult, hideRollInScene, showCritical } from "./ui/dice.js?v=20261107-2223";
-import { showFinale } from "./ui/finale.js?v=20261107-2223";
-import { Game } from "./engine/game.js?v=20261107-2223";
-import * as store from "./engine/storage.js?v=20261107-2223";
-import { speech } from "./ui/speech.js?v=20261107-2223";
-import { soundSettings } from "./ui/sound.js?v=20261107-2223";
-import { createRecorder } from "./ui/voice.js?v=20261107-2223";
-import { openInventory } from "./ui/inventory.js?v=20261107-2223";
-import { askResume, openArchive } from "./ui/archive.js?v=20261107-2223";
-import * as archive from "./engine/archive.js?v=20261107-2223";
+import { castFromManifest, renderDrafts, renderScene, renderCards, renderEnemy, renderHud, renderLog, renderHeroes, renderInventory, setBusy, setStatus } from "./ui/screen.js?v=20261109-1826";
+import { askForKey, showDisclaimer, openMenu, askConfirm, DISCLAIMER_VERSION } from "./ui/modals.js?v=20261109-1826";
+import { loadAdventure, loadSkill } from "./engine/content.js?v=20261109-1826";
+import { DEFAULT_MODEL, transcribe } from "./engine/gemini.js?v=20261109-1826";
+import { rollDie } from "./engine/dice.js?v=20261109-1826";
+import { askRoll, showRollInScene, markRollResult, hideRollInScene, showCritical } from "./ui/dice.js?v=20261109-1826";
+import { showFinale } from "./ui/finale.js?v=20261109-1826";
+import { Game } from "./engine/game.js?v=20261109-1826";
+import * as store from "./engine/storage.js?v=20261109-1826";
+import { speech } from "./ui/speech.js?v=20261109-1826";
+import { soundSettings } from "./ui/sound.js?v=20261109-1826";
+import { createRecorder } from "./ui/voice.js?v=20261109-1826";
+import { openInventory } from "./ui/inventory.js?v=20261109-1826";
+import { askResume, openArchive } from "./ui/archive.js?v=20261109-1826";
+import * as archive from "./engine/archive.js?v=20261109-1826";
 
 const ADVENTURE = "content/adventures/adventure_1_v4";
 const SKILL = "content/skill/gamemaster.md";
@@ -54,14 +54,18 @@ function draw() {
   const s = game.state;
   const aw = game.awaiting ?? { type: "answer", hero: "any" };
   const heroIds = cast.heroes.map((h) => h.id);
-  if (!active || !(s.participants.includes(active) || active === "both")) active = s.participants[0] ?? heroIds[0];
+  // Z-36: відповісти може і той, до кого звертається Ведучий, навіть якщо застосунок ще не переніс його в сцену.
+  const lastCta = game.stages.at(-1)?.callToAction?.hero;
+  const addressed = [aw.hero, lastCta].flatMap((h) => (h === "both" || h === "any" ? heroIds : heroIds.includes(h) ? [h] : []));
+  const speakers = [...new Set([...s.participants, ...addressed])];
+  if (!active || !(speakers.includes(active) || (active === "both" && speakers.length >= 2))) active = speakers[0] ?? heroIds[0];
   renderScene(currentImage());
   renderEnemy(currentEnemy());
   renderHud({ stars: s.stars, starsMax: content.manifest.rules.stars_max, shield: s.boss_phase && s.boss_phase !== "done" ? s.shield : null, shieldMax: content.manifest.rules.shield });
   renderLog(cast, game.stages, view);
   updateReplayButton();
   $("log-latest").hidden = view >= game.stages.length - 1;
-  renderHeroes(cast, { active, awaited: aw.type === "answer" ? aw.hero : null, participants: s.participants }, (hero) => { active = hero; draw(); });
+  renderHeroes(cast, { active, awaited: aw.type === "answer" ? aw.hero : null, participants: speakers }, (hero) => { active = hero; draw(); });
   renderInventory(s.inventory);
   const rollBtn = $("roll");
   rollBtn.hidden = aw.type !== "roll" || busy;
@@ -97,6 +101,13 @@ async function finish() {
     setBusy(false);
     return;
   }
+  // Z-45: фінальний екран — лише коли диктор дочитав останню сцену, і після короткої паузи.
+  const lastKey = game.stages.length - 1;
+  if (speech.speakingKey === lastKey) {
+    setStatus("Ведучий завершує історію…");
+    await new Promise((done) => speech.onChange((key) => { if (key !== lastKey) done(); }));
+  }
+  await new Promise((r) => setTimeout(r, 1500));
   setBusy(false); setStatus("");
   if (!game.archived) { archive.add(game.toJSON(), { title: content.manifest.title, finished: true }); game.archived = true; }
   store.save("session", game.toJSON());

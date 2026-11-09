@@ -1,7 +1,7 @@
 // Вікно інвентарю (D-13): картки предметів з літературними назвами, збільшення по натисканню,
 // стан суперздібностей героїв. На гру не впливає — лише показує.
-import { openModal } from "./modals.js?v=20261107-2223";
-import { esc } from "./screen.js?v=20261107-2223";
+import { openModal } from "./modals.js?v=20261109-1826";
+import { esc } from "./screen.js?v=20261109-1826";
 
 const IMG = (id) => `content/images/${id}.jpg`;
 
